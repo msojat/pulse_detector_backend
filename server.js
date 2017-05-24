@@ -1,6 +1,6 @@
 var express = require("express");
 var bodyParser = require('body-parser');
-var dbActions = require('./db_actions');
+var dbActions = require('./database_actions');
 var app = express();
 
 //body parser middleware

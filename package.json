@@ -1,5 +1,5 @@
 {
-  "name": "pulse-detector",
+  "name": "pulse_detector_backend",
   "version": "1.0.0",
   "description": "Pulse detector API code",
   "main": "server.js",
