@@ -1,0 +1,20 @@
+{
+  "name": "pulse-detector",
+  "version": "1.0.0",
+  "description": "Pulse detector API code",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Denis Fodor <fodor101@live.com>",
+  "license": "ISC",
+  "dependencies": {
+    "backbone": "^1.3.3",
+    "body-parser": "^1.17.2",
+    "express": "^4.15.3",
+    "guid": "0.0.12",
+    "mysql": "^2.13.0",
+    "mysql-model": "0.0.2",
+    "underscore": "^1.8.3"
+  }
+}
