@@ -1,13 +1,15 @@
-var express = require('express');
-var Guid = require('guid');
-var model = require("./model/database_model");
-var config = require("../config.json");
+var express = require("express");
+var Guid = require("guid");
+var model = require("./../model/database_model");
+var config = require("../../config.json");
 var router = express.Router();
+var util = require("../util");
 
 router.post("/add_user", function (req, res) {
 
-    if (!req.body.name || !req.body.surname || !req.body.jmbag || !req.body.number_of_records ||
-        req.body.app_secret !== config.app_secret) {
+    if (!(util.isNumberValid(req.body.jmbag) && req.body.jmbag.length == 10 && util.isNumberValid(req.body.number_of_records) &&
+        util.isNameValid(req.body.name) && util.isNameValid(req.body.surname) &&
+        req.body.app_secret === config.app_secret)) {
         res.status(400).send();
         return;
     }
@@ -72,9 +74,11 @@ router.get("/get_users", function (req, res) {
 
 router.post("/add_record", function (req, res) {
 
-    if (!req.body.user_id || !req.body.identifier_id || !req.body.record_length || !req.body.record_number ||
-        !req.body.start_record_time || !req.body.end_record_time || !req.body.heart_rate ||
-        req.body.app_secret !== config.app_secret) {
+    if (!(util.isNumberValid(req.body.user_id) && util.isNumberValid(req.body.identifier_id) &&
+        util.isNumberValid(req.body.record_length) && util.isNumberValid(req.body.record_number) &&
+        util.isMixOfNumbersAndDashes(req.body.start_record_time) &&
+        util.isMixOfNumbersAndDashes(req.body.end_record_time) && util.isFloat(req.body.heart_rate)
+        && req.body.app_secret === config.app_secret)) {
         res.status(400).send();
         return;
     }
@@ -113,5 +117,6 @@ router.post("/add_record", function (req, res) {
         });
     });
 });
+
 
 module.exports = router;

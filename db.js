@@ -1,4 +1,4 @@
-var mysqlModel = require('mysql-model');
+var mysqlModel = require("mysql-model");
 
 var connection = mysqlModel.createConnection({
     host: 'localhost',
