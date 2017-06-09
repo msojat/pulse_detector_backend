@@ -1,7 +1,7 @@
 var express = require("express");
 var Guid = require("guid");
 var model = require("./../model/database_model");
-var config = require("../../config.json");
+var config = require("../config.js");
 var router = express.Router();
 var util = require("../util");
 
