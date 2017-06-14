@@ -1,0 +1,64 @@
+.jumbotron {
+    width: 60%;
+    margin: auto;
+    margin-top: 20px;
+}
+
+.form-inline {
+    width: 50%;
+    margin: auto;
+}
+
+.navbar-nav {
+    width: 60%;
+    margin: auto;
+    margin-top: 20px;
+    float: none;
+    background-color: #204d74;
+    border-radius: 5px;
+}
+
+li a {
+    color: #ffffff;
+    border-radius: 4px;
+}
+
+.search {
+    background-color: #204d74;
+    border: none;
+    color: #ffffff;
+}
+
+.search:hover {
+    background-color: #2e6da4;
+    color: #ffffff;
+}
+
+.search:focus {
+    color: #ffffff;
+    outline: none;
+}
+
+.modal-title {
+    font-size: 20px;
+}
+
+.close {
+    margin-top: -25px !important;
+}
+
+.modal-body p {
+    font-size: 16px;
+}
+
+#get_records {
+    width: 50%;
+    margin: auto;
+    display: block;
+}
+
+#get_records, #get_records:hover, #get_records:visited, #get_records:link {
+    color: #ffffff;
+    outline: none;
+    text-decoration:none;
+}

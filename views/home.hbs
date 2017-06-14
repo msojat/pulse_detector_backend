@@ -1,1 +1,65 @@
-<h1>{{ data }}</h1>
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="/static/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="/static/js/jquery.js"></script>
+    <script src="/static/js/bootstrap.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+</head>
+<body>
+<div class="container">
+    <div class="jumbotron">
+        <form class="form-inline" action="">
+            <div class="input-group">
+                <input  type="text" class="form-control" name="jmbag" pattern="\d{10}" title="Enter 10 digit JMBAG"
+                       maxlength="10" required="true" placeholder="Enter user JMBAG"/>
+            </div>
+            <div class="input-group">
+                <a id="search" href="{{{url}}}" class="btn search">Search</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $("input[name=jmbag]").bind('input', function () {
+            $("#search").attr("href", {{{url}}} + $(this).val());
+        });
+    });
+
+</script>
+
+{{#if jmbag}}
+    <script type="text/javascript">
+        $(function () {
+            $("#notFoundModal").modal();
+
+            //remove query string of bad JMBAG
+            window.history.replaceState(null, null, window.location.pathname);
+        });
+    </script>
+{{/if}}
+
+<div class="modal fade" id="notFoundModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Warning</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>User with JMBAG <b>{{{jmbag}}}</b> not found</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn search" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

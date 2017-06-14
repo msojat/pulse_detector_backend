@@ -12,20 +12,8 @@
 <div class="container">
     <ul class="nav navbar-nav">
         <li class="active"><a href="/">Home</a></li>
+        <li class="active"><a href="/user_details/{{{jmbag}}}">User details</a></li>
     </ul>
-    <div class="jumbotron">
-        <label>Name</label>
-        <p>{{{ user.name }}}</p>
-        <label>Surname</label>
-        <p>{{{ user.surname }}}</p>
-        <label>JMBAG</label>
-        <p>{{{ user.jmbag }}}</p>
-        <label>Active since</label>
-        <p>{{{ user.active_since }}}</p>
-
-        <br/>
-        <a id="get_records" class="btn search" href="{{{url}}}">Get all records</a>
-    </div>
 </div>
 </body>
 </html>

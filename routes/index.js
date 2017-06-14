@@ -1,9 +1,20 @@
-var express = require('express');
+var express = require("express");
 var model = require("./../model/database_model");
 var router = express.Router();
 
+const notFound = "not_found";
+const getRecordsUrl = "/get_records/";
+const userDetails = "/user_details/";
+
 router.get("/", function (req, res) {
-    res.render("home", {data: "home.hbs"});
+
+    if (req.param(notFound)) {
+        res.render("home", {"jmbag": req.param(notFound), "url": userDetails});
+
+    } else {
+        res.render("home", {"url": userDetails});
+
+    }
 });
 
 router.get("/user_details/:jmbag", function (req, res) {
@@ -21,6 +32,12 @@ router.get("/user_details/:jmbag", function (req, res) {
 
         if (err) {
             res.status(500).json({"status_code": 500, "status_message": "internal server error"});
+            return;
+        }
+
+        if (row === undefined) {
+            res.redirect("/?" + notFound + "=" + req.param('jmbag'));
+            return;
         }
 
         var user = {
@@ -32,8 +49,14 @@ router.get("/user_details/:jmbag", function (req, res) {
             'last_access_date': row.last_access_date
         };
 
-        res.render("user_details", {"user": user});
+        res.render("user_details", {"user": user, "url": getRecordsUrl + row.jmbag});
     });
+});
+
+router.get("/get_records/:jmbag", function (req, res) {
+    var jmbag = req.param('jmbag');
+
+    res.render("all_records", {"jmbag": jmbag});
 });
 
 module.exports = router;

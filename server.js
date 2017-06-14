@@ -15,6 +15,9 @@ app.engine('hbs', hbs({extname: 'hbs'}));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
+//middleware for serving static files
+app.use('/static', express.static('public'));
+
 //body parser middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -29,3 +32,5 @@ app.use("/api", dbActions);
 httpErrorPages(app);
 
 app.listen(3000);
+
+module.exports = app;
