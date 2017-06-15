@@ -13,11 +13,12 @@
     <div class="jumbotron">
         <form class="form-inline" action="">
             <div class="input-group">
-                <input  type="text" class="form-control" name="jmbag" pattern="\d{10}" title="Enter 10 digit JMBAG"
-                       maxlength="10" required="true" placeholder="Enter user JMBAG"/>
+                <input type="text" class="form-control" name="jmbag" pattern="\d{10}" title="Enter 10 digit JMBAG"
+                       maxlength="10" required placeholder="Enter user JMBAG"/>
             </div>
             <div class="input-group">
                 <a id="search" href="{{{url}}}" class="btn search">Search</a>
+                <!--<input type="submit" class="btn search" value="Search"/>-->
             </div>
         </form>
     </div>
@@ -25,9 +26,28 @@
 
 <script type="text/javascript">
     $(function () {
-        $("input[name=jmbag]").bind('input', function () {
-            $("#search").attr("href", {{{url}}} + $(this).val());
+
+        var jmbagInput = "input[name=jmbag]";
+
+        $(jmbagInput).val("");
+        $(jmbagInput).tooltip();
+
+        $(jmbagInput).bind('input', function () {
+            $("#search").attr("href", {{{url}}} +$(this).val());
+
         });
+
+        $(jmbagInput).keypress(function () {
+            if (event.keyCode == 13) {
+                return false;
+            }
+        });
+
+        document.getElementById("search").onclick = function () {
+            if ($(jmbagInput).val().length < 10) {
+                return false;
+            }
+        }
     });
 
 </script>

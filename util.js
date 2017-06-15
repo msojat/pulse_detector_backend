@@ -1,3 +1,5 @@
+var dateformat = require('dateformat');
+
 var isNameValid = function (name) {
     var nameRegex = new RegExp("[a-zA-Z ]+");
     if (nameRegex.test(name)) {
@@ -35,9 +37,22 @@ var isFloat = function (value) {
     return false;
 };
 
+var getFormattedDate = function (date) {
+    var format = "dd-mm-yyyy HH:MM:ss";
+    return dateformat(date, format);
+};
+
+var getForbiddenStatus = function (res) {
+    res.writeHead(403, {"Content-Type": "application/json"});
+    var json = JSON.stringify({"error": {"code": "403", "description": "Forbidden"}}, null, 4);
+    res.end(json);
+};
+
 module.exports = {
     isNameValid: isNameValid,
     isNumberValid: isNumberValid,
     isMixOfNumbersAndDashes: isMixOfNumbersAndDashes,
-    isFloat: isFloat
+    isFloat: isFloat,
+    getFormattedDate: getFormattedDate,
+    getForbiddenStatus: getForbiddenStatus
 };

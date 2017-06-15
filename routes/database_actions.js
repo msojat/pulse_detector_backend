@@ -7,9 +7,13 @@ var util = require("../util");
 
 router.post("/add_user", function (req, res) {
 
+    if (req.body.app_secret !== config.app_secret) {
+        util.getForbiddenStatus(res);
+        return;
+    }
+
     if (!(util.isNumberValid(req.body.jmbag) && req.body.jmbag.length == 10 && util.isNumberValid(req.body.number_of_records) &&
-        util.isNameValid(req.body.name) && util.isNameValid(req.body.surname) &&
-        req.body.app_secret === config.app_secret)) {
+        util.isNameValid(req.body.name) && util.isNameValid(req.body.surname))) {
         res.status(400).send();
         return;
     }
@@ -27,12 +31,14 @@ router.post("/add_user", function (req, res) {
             name: req.body.name,
             surname: req.body.surname,
             jmbag: req.body.jmbag,
-            last_access_date: new Date().toISOString().slice(0, 19).replace('T', ' ') //set current time
+            last_access_date: new Date()
         });
 
         //update existing user
         if (id !== -1) {
             user.set('id', id);
+        } else {
+            user.active_since = new Date();
         }
 
         var Identifier = model.identifier;
@@ -64,6 +70,12 @@ router.post("/add_user", function (req, res) {
 });
 
 router.get("/get_users", function (req, res) {
+
+    if (req.header("app_secret") !== config.app_secret) {
+        util.getForbiddenStatus(res);
+        return;
+    }
+
     var User = model.user;
 
     var user = new User();
@@ -74,11 +86,15 @@ router.get("/get_users", function (req, res) {
 
 router.post("/add_record", function (req, res) {
 
+    if (req.body.app_secret !== config.app_secret) {
+        util.getForbiddenStatus(res);
+        return;
+    }
+
     if (!(util.isNumberValid(req.body.user_id) && util.isNumberValid(req.body.identifier_id) &&
         util.isNumberValid(req.body.record_length) && util.isNumberValid(req.body.record_number) &&
         util.isMixOfNumbersAndDashes(req.body.start_record_time) &&
-        util.isMixOfNumbersAndDashes(req.body.end_record_time) && util.isFloat(req.body.heart_rate)
-        && req.body.app_secret === config.app_secret)) {
+        util.isMixOfNumbersAndDashes(req.body.end_record_time) && util.isFloat(req.body.heart_rate))) {
         res.status(400).send();
         return;
     }

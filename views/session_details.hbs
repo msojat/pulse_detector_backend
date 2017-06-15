@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="/static/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="/static/js/jquery.js"></script>
+    <script src="/static/js/bootstrap.js"></script>
+    <meta charset="utf-8">
+</head>
+<body>
+<div class="container">
+    <ul class="nav navbar-nav">
+        <li class="active"><a href="/">Home</a></li>
+        <li class="active"><a href="{{{url}}}">Get records</a></li>
+    </ul>
+    <div class="jumbotron">
+        <div class="row">
+            {{#if session.is_completed}}
+                <h2 class="success">Session completed</h2>
+            {{else}}
+                <h2 class="error">Session not completed</h2>
+            {{/if}}
+            <p><b>Records: {{{session.completed_records}}}/{{{session.number_of_records}}}</b></p>
+
+        </div>
+
+        <table id="table" class="table table-hover">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th class="text-center">Heart rate</th>
+                <th class="text-center">Start time</th>
+                <th class="text-center">End time</th>
+                <th class="text-center">Length</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{#each data}}
+                <tr>
+                    <th scope="row">{{{this.record_number}}}</th>
+                    <td class="text-center">{{{this.heart_rate}}}</td>
+                    <td class="text-center">{{{this.start_record_time}}}</td>
+                    <td class="text-center">{{{this.end_record_time}}}</td>
+                    <td class="text-center">{{{this.length}}}</td>
+                </tr>
+            {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

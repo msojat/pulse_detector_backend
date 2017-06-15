@@ -1,3 +1,7 @@
+.container {
+    width: 100%;
+}
+
 .jumbotron {
     width: 60%;
     margin: auto;
@@ -7,6 +11,7 @@
 .form-inline {
     width: 50%;
     margin: auto;
+    padding-left: 50px;
 }
 
 .navbar-nav {
@@ -60,5 +65,19 @@ li a {
 #get_records, #get_records:hover, #get_records:visited, #get_records:link {
     color: #ffffff;
     outline: none;
-    text-decoration:none;
+    text-decoration: none;
+}
+
+h2 {
+    width: 100%;
+    margin: auto;
+    text-align: center;
+}
+
+.error {
+    color: #D8000C;
+}
+
+.success {
+    color: #4F8A10;
 }

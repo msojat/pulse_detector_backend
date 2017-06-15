@@ -32,5 +32,3 @@ app.use("/api", dbActions);
 httpErrorPages(app);
 
 app.listen(3000);
-
-module.exports = app;

@@ -27,5 +27,35 @@
         <a id="get_records" class="btn search" href="{{{url}}}">Get all records</a>
     </div>
 </div>
+
+    {{#if is_empty}}
+    <script type="text/javascript">
+        $(function () {
+            $("#isEmpty").modal();
+
+            //remove query string of bad JMBAG
+            window.history.replaceState(null, null, window.location.pathname);
+        });
+    </script>
+{{/if}}
+
+<div class="modal fade" id="isEmpty">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Warning</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>There are no records for this user</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn search" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
