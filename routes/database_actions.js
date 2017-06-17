@@ -23,6 +23,12 @@ router.post("/add_user", function (req, res) {
     var user = new User();
     var id = -1;
     user.find("first", {where: "jmbag = " + req.body.jmbag}, function (err, row, fields) {
+
+        if (err) {
+            util.getInternalServerError(res);
+            return;
+        }
+
         if (!err && row !== undefined) {
             id = row.id;
         }
@@ -50,7 +56,8 @@ router.post("/add_user", function (req, res) {
 
         user.save(function (err, result) {
             if (err) {
-                res.status(500).send(err);
+                util.getInternalServerError(res);
+                return;
             }
 
             if (id === -1) {
@@ -59,7 +66,8 @@ router.post("/add_user", function (req, res) {
 
             identifier.save(function (error, r) {
                 if (error) {
-                    res.status(500).send(error);
+                    util.getInternalServerError(res);
+                    return;
                 }
 
                 res.json({"identifier_id": r.insertId, "user_id": id});
@@ -80,6 +88,12 @@ router.get("/get_users", function (req, res) {
 
     var user = new User();
     user.find("all", {}, function (err, rows, fields) {
+
+        if (err) {
+            util.getInternalServerError(res);
+            return;
+        }
+
         res.json(rows);
     })
 });
@@ -112,7 +126,8 @@ router.post("/add_record", function (req, res) {
 
     record.save(function (err, result) {
         if (err) {
-            res.status(500).send(err);
+            util.getInternalServerError(res);
+            return;
         }
 
         var HeartRate = model.heartRate;
@@ -125,7 +140,8 @@ router.post("/add_record", function (req, res) {
 
         heartRate.save(function (err, result) {
             if (err) {
-                res.status(500).send(err);
+                util.getInternalServerError(res);
+                return;
             }
 
             res.status(204).end();

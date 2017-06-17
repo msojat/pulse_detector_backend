@@ -9,6 +9,10 @@ const getRecordsUrl = "/get_records/";
 const userDetails = "/user_details/";
 const recordDetails = "/session_details/";
 
+var userNotFound = function (req, res) {
+    res.redirect("/?" + notFound + "=" + req.param('jmbag'));
+};
+
 router.get("/", function (req, res) {
 
     if (req.param(notFound)) {
@@ -21,7 +25,7 @@ router.get("/", function (req, res) {
 router.get("/user_details/:jmbag", function (req, res) {
 
     if (!req.param('jmbag') || req.param('jmbag').length !== 10) {
-        res.status(400).json({"status_code": 400, "status_message": "Check your JMBAG"});
+        userNotFound(req, res);
         return;
     }
 
@@ -32,12 +36,12 @@ router.get("/user_details/:jmbag", function (req, res) {
     user.find('first', {where: "jmbag = " + req.param('jmbag')}, function (err, row, fields) {
 
         if (err) {
-            res.status(500).json({"status_code": 500, "status_message": "internal server error"});
+            util.getInternalServerError(res);
             return;
         }
 
         if (row === undefined) {
-            res.redirect("/?" + notFound + "=" + req.param('jmbag'));
+            userNotFound(req, res);
             return;
         }
 
@@ -83,7 +87,12 @@ router.get("/get_records/:jmbag", function (req, res) {
     user.query(query, function (error, r, f) {
 
         if (error) {
-            res.status(500).json({"status_code": 500, "status_message": "internal server error"});
+            util.getInternalServerError(res);
+            return;
+        }
+
+        if (r === undefined) {
+            userNotFound(req, res);
             return;
         }
 
@@ -102,7 +111,7 @@ router.get("/get_records/:jmbag", function (req, res) {
             tmp.jmbag = r[i].jmbag;
             tmp.avg = r[i].avg.toFixed(2);
             tmp.index_increment = i + 1;
-            tmp.url = recordDetails + jmbag + "/" + r[i].identifier_id;
+            tmp.url = recordDetails + jmbag + "/" + r[i].identifier_id + "/" + tmp.index_increment;
             tmp.is_completed = r[i].number_of_records === r[i].records;
             data.push(tmp);
         }
@@ -112,9 +121,10 @@ router.get("/get_records/:jmbag", function (req, res) {
     });
 });
 
-router.get("/session_details/:jmbag/:identifier_id", function (req, res) {
+router.get("/session_details/:jmbag/:identifier_id/:session_number", function (req, res) {
     var identifierId = req.param('identifier_id');
     var jmbag = req.param('jmbag');
+    var sessionNumber = req.param('session_number');
 
     var query = 'select distinct record.id, record.identifier_id, record.record_number, identifier.number_of_records,' +
         ' record.record_length, record.start_record_time, record.end_record_time, heart_rate.heart_rate, user.name,' +
@@ -123,7 +133,7 @@ router.get("/session_details/:jmbag/:identifier_id", function (req, res) {
         ' join identifier on record.identifier_id = identifier.id ' +
         ' join user on user.id = record.user_id' +
         ' where record.identifier_id = ' + identifierId + ' and heart_rate.identifier_id = ' + identifierId + '' +
-        ' and heart_rate.record_id = record.id;';
+        ' and heart_rate.record_id = record.id and user.jmbag = ' + jmbag + ';';
 
     var Record = model.record;
 
@@ -131,7 +141,12 @@ router.get("/session_details/:jmbag/:identifier_id", function (req, res) {
 
     record.query(query, function (error, results, fields) {
         if (error) {
-            res.status(500).json({"status_code": 500, "status_message": "internal server error"});
+            util.getInternalServerError(res);
+            return;
+        }
+
+        if (results === undefined || results.length === 0) {
+            userNotFound(req, res);
             return;
         }
 
@@ -166,7 +181,8 @@ router.get("/session_details/:jmbag/:identifier_id", function (req, res) {
                 "url": url,
                 "session": session,
                 "fullname": fullname,
-                "details_url": detailsUrl
+                "details_url": detailsUrl,
+                "session_number": sessionNumber
             });
         } else {
             res.render("session_details", {

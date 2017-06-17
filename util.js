@@ -48,11 +48,16 @@ var getForbiddenStatus = function (res) {
     res.end(json);
 };
 
+var getInternalServerError = function (res) {
+    res.status(500).json({"status_code": 500, "status_message": "internal server error"});
+};
+
 module.exports = {
     isNameValid: isNameValid,
     isNumberValid: isNumberValid,
     isMixOfNumbersAndDashes: isMixOfNumbersAndDashes,
     isFloat: isFloat,
     getFormattedDate: getFormattedDate,
-    getForbiddenStatus: getForbiddenStatus
+    getForbiddenStatus: getForbiddenStatus,
+    getInternalServerError: getInternalServerError
 };
