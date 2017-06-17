@@ -10,9 +10,12 @@
 </head>
 <body>
 <div class="container">
-    <ul class="nav navbar-nav">
-        <li class="active"><a href="/">Home</a></li>
-    </ul>
+    <div id="breadcrumbs" class="row">
+        <div class="btn-group btn-breadcrumb">
+            <a href="/" class="btn btn-primary"><i class="glyphicon glyphicon-home"></i></a>
+            <a style="cursor: text" class="btn btn-primary">{{{ user.name }}} {{{ user.surname }}}</a>
+        </div>
+    </div>
     <div class="jumbotron">
         <label>Name</label>
         <p>{{{ user.name }}}</p>
@@ -22,13 +25,26 @@
         <p>{{{ user.jmbag }}}</p>
         <label>Active since</label>
         <p>{{{ user.active_since }}}</p>
+        <label>Last access</label>
+        <p>{{{ user.last_access }}}</p>
 
         <br/>
         <a id="get_records" class="btn search" href="{{{url}}}">Get all records</a>
     </div>
 </div>
 
-    {{#if is_empty}}
+<script type="text/javascript">
+    $(function () {
+        $('a').on('dragend', function () {
+            var $this = $(this),
+                    $parent = $this.parent(),
+                    $next = $(this.nextSibling); // $.next() doesn't include text
+            $this.detach().insertBefore($next);
+        });
+    });
+</script>
+
+{{#if is_empty}}
     <script type="text/javascript">
         $(function () {
             $("#isEmpty").modal();

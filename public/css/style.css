@@ -4,8 +4,7 @@
 
 .jumbotron {
     width: 60%;
-    margin: auto;
-    margin-top: 20px;
+    margin: 20px auto;
 }
 
 .form-inline {
@@ -14,28 +13,19 @@
     padding-left: 50px;
 }
 
-.navbar-nav {
-    width: 60%;
-    margin: auto;
-    margin-top: 20px;
-    float: none;
-    background-color: #204d74;
-    border-radius: 5px;
-}
-
 li a {
     color: #ffffff;
     border-radius: 4px;
 }
 
 .search {
-    background-color: #204d74;
+    background-color: #337ab7;
     border: none;
     color: #ffffff;
 }
 
 .search:hover {
-    background-color: #2e6da4;
+    background-color: #204d74;
     color: #ffffff;
 }
 
@@ -81,3 +71,80 @@ h2 {
 .success {
     color: #4F8A10;
 }
+
+/*Breadcrumbs style*/
+
+#breadcrumbs {
+    width: 60%;
+    margin: auto;
+    margin-top: 20px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.btn-breadcrumb .btn:not(:last-child):after {
+    content: " ";
+    display: block;
+    width: 0;
+    height: 0;
+    border-top: 17px solid transparent;
+    border-bottom: 17px solid transparent;
+    border-left: 10px solid white;
+    position: absolute;
+    top: 50%;
+    margin-top: -17px;
+    left: 100%;
+    z-index: 3;
+}
+
+.btn-breadcrumb .btn:not(:last-child):before {
+    content: " ";
+    display: block;
+    width: 0;
+    height: 0;
+    border-top: 17px solid transparent;
+    border-bottom: 17px solid transparent;
+    border-left: 10px solid rgb(173, 173, 173);
+    position: absolute;
+    top: 50%;
+    margin-top: -17px;
+    margin-left: 1px;
+    left: 100%;
+    z-index: 3;
+}
+
+/** The Spacing **/
+.btn-breadcrumb .btn {
+    padding: 6px 12px 6px 24px;
+}
+
+.btn-breadcrumb .btn:first-child {
+    padding: 6px 6px 6px 10px;
+}
+
+.btn-breadcrumb .btn:last-child {
+    padding: 6px 18px 6px 24px;
+}
+
+/** Primary button **/
+.btn-breadcrumb .btn.btn-primary:not(:last-child):after {
+    border-left: 10px solid #337ab7;
+}
+
+.btn-breadcrumb .btn.btn-primary:not(:last-child):before {
+    border-left: 10px solid #205d74;
+}
+
+.btn-breadcrumb .btn.btn-primary:hover:not(:last-child):after {
+    border-left: 10px solid #285e8e;
+}
+
+.btn-breadcrumb .btn.btn-primary:hover:not(:last-child):before {
+    border-left: 10px solid #285e8e;
+}
+
+.btn-breadcrumb .btn.btn-primary:active:not(:last-child):after {
+    border-left: 10px solid #204d74;
+}
+

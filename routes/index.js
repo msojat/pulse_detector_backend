@@ -47,7 +47,7 @@ router.get("/user_details/:jmbag", function (req, res) {
             'surname': row.surname,
             'jmbag': row.jmbag,
             'active_since': util.getFormattedDate(row.active_since),
-            'last_access_date': row.last_access_date
+            'last_access': util.getFormattedDate(row.last_access_date)
         };
 
         if (req.param(isEmpty)) {
@@ -65,12 +65,16 @@ router.get("/user_details/:jmbag", function (req, res) {
 router.get("/get_records/:jmbag", function (req, res) {
     var jmbag = req.param('jmbag');
 
-    var query = 'select `user`.jmbag, `user`.name, `user`.surname, record.identifier_id, avg(heart_rate.heart_rate) as avg from `user` \ ' +
-        'join record on record.user_id = `user`.id \
-        join identifier on identifier.id = record.identifier_id \
-        join heart_rate on heart_rate.identifier_id = record.identifier_id \
-        group by identifier.id,`user`.id \
-        having `user`.jmbag = "' + jmbag + '";';
+    var subQueryRecordsCount = "(select count(*) from record where identifier.id = record.identifier_id) as records,";
+
+    var query = 'select identifier.number_of_records, ' + subQueryRecordsCount +
+        ' `user`.jmbag, `user`.name, `user`.surname, record.identifier_id, ' +
+        ' avg(heart_rate.heart_rate) as avg, identifier.number_of_records from `user` ' +
+        ' join record on record.user_id = `user`.id ' +
+        ' join identifier on identifier.id = record.identifier_id ' +
+        ' join heart_rate on heart_rate.identifier_id = record.identifier_id ' +
+        ' group by identifier.id,`user`.id ' +
+        ' having `user`.jmbag = "' + jmbag + '";';
 
     var User = model.user;
 
@@ -99,6 +103,7 @@ router.get("/get_records/:jmbag", function (req, res) {
             tmp.avg = r[i].avg.toFixed(2);
             tmp.index_increment = i + 1;
             tmp.url = recordDetails + jmbag + "/" + r[i].identifier_id;
+            tmp.is_completed = r[i].number_of_records === r[i].records;
             data.push(tmp);
         }
 
@@ -109,11 +114,14 @@ router.get("/get_records/:jmbag", function (req, res) {
 
 router.get("/session_details/:jmbag/:identifier_id", function (req, res) {
     var identifierId = req.param('identifier_id');
+    var jmbag = req.param('jmbag');
 
     var query = 'select distinct record.id, record.identifier_id, record.record_number, identifier.number_of_records,' +
-        ' record.record_length, record.start_record_time, record.end_record_time, heart_rate.heart_rate from record ' +
+        ' record.record_length, record.start_record_time, record.end_record_time, heart_rate.heart_rate, user.name,' +
+        ' user.surname from record ' +
         ' join heart_rate on heart_rate.identifier_id = record.identifier_id' +
         ' join identifier on record.identifier_id = identifier.id ' +
+        ' join user on user.id = record.user_id' +
         ' where record.identifier_id = ' + identifierId + ' and heart_rate.identifier_id = ' + identifierId + '' +
         ' and heart_rate.record_id = record.id;';
 
@@ -127,7 +135,8 @@ router.get("/session_details/:jmbag/:identifier_id", function (req, res) {
             return;
         }
 
-        var url = getRecordsUrl + req.param('jmbag');
+        var url = getRecordsUrl + jmbag;
+        var detailsUrl = userDetails + jmbag;
         var session = {};
 
         if (results.length > 0) {
@@ -137,6 +146,8 @@ router.get("/session_details/:jmbag/:identifier_id", function (req, res) {
         }
 
         var data = [];
+
+        var fullname = results[0].name + " " + results[0].surname;
 
         for (var i = 0; i < results.length; i++) {
             var tmp = {};
@@ -153,10 +164,14 @@ router.get("/session_details/:jmbag/:identifier_id", function (req, res) {
             res.render("session_details", {
                 "data": data,
                 "url": url,
-                "session": session
+                "session": session,
+                "fullname": fullname,
+                "details_url": detailsUrl
             });
         } else {
-            res.render("session_details", {"data": data});
+            res.render("session_details", {
+                "data": data, "fullname": fullname, "details_url": detailsUrl
+            });
         }
 
     });
