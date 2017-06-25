@@ -4,11 +4,14 @@ var logger = require("morgan-body");
 var hbs = require("express-handlebars");
 var path = require("path");
 var httpErrorPages = require('http-error-pages');
+var helmet = require("helmet");
 
 var dbActions = require("./routes/database_actions");
 var index = require('./routes/index');
 
 var app = express();
+
+app.use(helmet());
 
 // view engine setup
 app.engine('hbs', hbs({extname: 'hbs'}));
