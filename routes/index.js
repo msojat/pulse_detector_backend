@@ -5,7 +5,7 @@ var router = express.Router();
 
 const notFound = "not_found";
 const isEmpty = "is_empty";
-const getRecordsUrl = "/get_records/";
+const getRecordsUrl = "/sessions/";
 const userDetails = "/user_details/";
 const recordDetails = "/session_details/";
 
@@ -66,7 +66,7 @@ router.get("/user_details/:jmbag", function (req, res) {
     });
 });
 
-router.get("/get_records/:jmbag", function (req, res) {
+router.get("/sessions/:jmbag", function (req, res) {
     var jmbag = req.param('jmbag');
 
     var subQueryRecordsCount = "(select count(*) from record where identifier.id = record.identifier_id) as records,";
@@ -116,7 +116,7 @@ router.get("/get_records/:jmbag", function (req, res) {
             data.push(tmp);
         }
 
-        res.render("all_records", {"data": data, "fullname": fullname, "jmbag": jmbag, "url": url});
+        res.render("all_sessions", {"data": data, "fullname": fullname, "jmbag": jmbag, "url": url});
 
     });
 });
