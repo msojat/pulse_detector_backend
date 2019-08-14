@@ -48,6 +48,12 @@ var getForbiddenStatus = function (res) {
     res.end(json);
 };
 
+var getBadRequest = function (res) {
+    res.writeHead(400, {"Content-Type": "application/json"});
+    var json = JSON.stringify({"error": {"code": "400", "description": "Bad Request"}}, null, 4);
+    res.end(json);
+};
+
 var getInternalServerError = function (res) {
     res.status(500).json({"status_code": 500, "status_message": "internal server error"});
 };
