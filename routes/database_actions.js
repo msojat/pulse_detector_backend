@@ -152,27 +152,6 @@ router.post("/add_record", function (req, res) {
     });
 });
 
-function saveMeasurement(val, time, image_id, user_id, res, index, len) {
-    var Measurement = model.measurement;
-    var measurement = new Measurement({
-        bpm: val,
-        time: time,
-        image_id: image_id,
-        user_id: user_id
-    });
-
-    measurement.save(function(err, row){
-        if (err) {
-            util.getInternalServerError(res);
-            res.end()
-        }
-
-        if (index === len - 1) {
-            res.status(204).end();
-        }
-    });
-}
-
 router.post("/add_record/bulk", function (req, res) {
     // Return forbidden if app_secret is missing
     if (req.body.app_secret !== config.app_secret) {
@@ -183,48 +162,75 @@ router.post("/add_record/bulk", function (req, res) {
     let records = req.body.records;
     const user_id = req.body.user_id;
     const Image = model.image;
+    let image = new Image();
 
     if(!Array.isArray(records)) {
         util.getBadRequest(res);
         return;
     }
-    let image = new Image();
 
     records.forEach(function (record, index) {
         var value = record.value;
         var time = record.time;
-        var image_name = record.image;
+        var image_id = record.image;
 
-        // var image = new Image();
-        image.find("first", {where: "name = '" + record.image + "'"}, function (err, row, fields) {
+        const Measurement = model.measurement;
+        let measurement = new Measurement({
+            bpm: value,
+            time: time,
+            image_id: image_id,
+            user_id: user_id
+        });
+
+        measurement.save(function(err, row){
             if (err) {
                 util.getInternalServerError(res);
                 res.end()
             }
+            if(index === records.length - 1){
+                res.end();
+            }
+        });
+    });
+});
 
-            // If such entry doesn't exist, insert it
-            if (row === undefined) {
-                image.set('name', record.image);
-                    image.save(function(err, row){
+router.post("/add_image", function (req, res) {
+    if (req.body.app_secret !== config.app_secret) {
+        util.getForbiddenStatus(res);
+        return;
+    }
+
+    const Image = model.image;
+    let image = new Image();
+
+    if(! req.body.name){
+        res.status(400).end();
+        return;
+    }
+
+    image.find("first", {where: "name = '" + req.body.name + "'"}, function (err, row) {
+        if (err) {
+            util.getInternalServerError(res);
+            return;
+        } else {
+            if (row === undefined){
+                image.set('name', req.body.name);
+                if(req.body.location){
+                    image.set('location', req.body.location);
+                }
+                image.save(function (err, result) {
                     if (err) {
                         util.getInternalServerError(res);
-                        res.end()
-                    }
-                    else {
-                        image.set('id', row.insertId);
-                        saveMeasurement(value, time, image.id, user_id, res, index, records.length);
+                        return;
+                    } else {
+                        image.set('id', result.insertId);
+                        res.status(200).send(image);
                     }
                 });
+            } else {
+                res.status(200).send(row);
             }
-            else {
-                console.log(row);
-                image.set('id', row.id);
-                saveMeasurement(value, time, image.id, user_id, res, index, records.length);
-            }
-
-            // CONTINUE //
-
-        });
+        }
     });
 });
 
