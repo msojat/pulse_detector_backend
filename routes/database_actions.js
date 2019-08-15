@@ -87,9 +87,9 @@ router.get("/get_users", function (req, res) {
         return;
     }
 
-    var User = model.user;
+    const User = model.user;
 
-    var user = new User();
+    let user = new User();
     user.find("all", {}, function (err, rows, fields) {
 
         if (err) {
