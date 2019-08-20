@@ -258,5 +258,51 @@ router.post("/add_image", function (req, res) {
     });
 });
 
+router.get('/csv', function(req, res) {
+    // TODO: Security
+    /*
+    if (req.header("app_secret") !== config.app_secret) {
+        util.getForbiddenStatus(res);
+        return;
+    }
+    */
+    let session_id = req.query["session_id"];
+    if (!session_id){
+        res.status(400).send();
+        return;
+    }
+
+    let query_string = "SELECT measurement.*, measurement_session.user_id FROM measurement " +
+        "LEFT JOIN measurement_session " +
+        "ON measurement_session.id = measurement.session_id " +
+        "WHERE measurement_session.id = " + session_id + ";";
+
+    const MeasurementSession = model.measurementSession;
+
+    let measurementSession = new MeasurementSession();
+    measurementSession.query(query_string, function (err, rows) {
+        if (err) {
+            util.getInternalServerError(res);
+            return;
+        }
+
+        // CSV Specification
+        // http://www.ietf.org/rfc/rfc4180.txt
+
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', ['attachment; filename="filename.csv"']);
+
+        res.write('\"id\",\"bpm\",\"time\",\"image_id\",\"session_id\",\"user_id\"\r\n');
+        rows.forEach(function(row){
+            row = Object.values(row);
+            res.write(row.map(function(field) {
+                return '"' + field.toString().replace(/\"/g, '""') + '"';
+            }).toString() + '\r\n');
+        });
+        res.end();
+    });
+});
+
 
 module.exports = router;
