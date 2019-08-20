@@ -36,7 +36,7 @@
 <script type="text/javascript">
     $(function () {
         $('a').on('dragend', function () {
-            var $this = $(this),
+            let $this = $(this),
                     $parent = $this.parent(),
                     $next = $(this.nextSibling); // $.next() doesn't include text
             $this.detach().insertBefore($next);

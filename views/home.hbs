@@ -25,9 +25,10 @@
 </div>
 
 <script type="text/javascript">
+    // short for $(document).ready( function(){} );
     $(function () {
 
-        var jmbagInput = "input[name=jmbag]";
+        let jmbagInput = "input[name=jmbag]";
 
         $(jmbagInput).val("");
         $(jmbagInput).tooltip();
@@ -38,9 +39,16 @@
         });
 
         $(jmbagInput).keypress(function () {
-            if (event.keyCode == 13) {
-                return false;
+            if (event.key !== undefined) {
+                if (event.key === 13) {
+                    return false;
+                }
+            } else if (event.keyCode !== undefined) {
+                if (event.keyCode === 13) {
+                    return false;
+                }
             }
+
         });
 
         document.getElementById("search").onclick = function () {

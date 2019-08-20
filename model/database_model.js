@@ -1,23 +1,13 @@
-var connection = require("../db");
+let connection = require("../db");
 
-var User = connection.extend({tableName: "user"});
-var Image = connection.extend({tableName: "image"});
-var Measurement = connection.extend({tableName: "measurement"});
-/*
-var HeartRate = connection.extend({tableName: "heart_rate"});
-var Identifier = connection.extend({tableName: "identifier"});
-var Record = connection.extend({tableName: "record"});
-*/
+let User = connection.extend({tableName: "user"});
+let Image = connection.extend({tableName: "image"});
+let Measurement = connection.extend({tableName: "measurement"});
+let MeasurementSession = connection.extend({tableName: "measurement_session"});
+
 module.exports = {
     user: User,
     image: Image,
-    measurement: Measurement
+    measurement: Measurement,
+    measurementSession: MeasurementSession
 };
-/*
-module.exports = {
-    user: User,
-    heartRate: HeartRate,
-    identifier: Identifier,
-    record: Record
-};
-*/

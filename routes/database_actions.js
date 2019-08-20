@@ -12,17 +12,18 @@ router.post("/add_user", function (req, res) {
         return;
     }
 
-    if (!(util.isNumberValid(req.body.jmbag) && req.body.jmbag.length == 10 && util.isNumberValid(req.body.number_of_records) &&
+    if (!(util.isNumberValid(req.body.jmbag) && req.body.jmbag.length == 10 &&
+        util.isNumberValid(req.body.number_of_records) &&
         util.isNameValid(req.body.name) && util.isNameValid(req.body.surname))) {
         res.status(400).send();
         return;
     }
-	
-    var User = model.user;
-	
-    var user = new User();
-    var id = -1;
-	user.find("first", {where: "jmbag = " + req.body.jmbag}, function (err, row, fields) {
+
+    const User = model.user;
+
+    let user = new User();
+    let id = -1;
+    user.find("first", {where: "jmbag = " + req.body.jmbag}, function (err, row, fields) {
 		
         if (err) {
             util.getInternalServerError(res);
@@ -46,14 +47,6 @@ router.post("/add_user", function (req, res) {
         } else {
             user.active_since = new Date();
         }
-		/*
-        var Identifier = model.identifier;
-        var guid = Guid.create();
-        var identifier = new Identifier({
-            identifier: guid,
-            number_of_records: req.body.number_of_records
-        });
-		 */
 		
         user.save(function (err, result) {
             if (err) {
@@ -64,18 +57,51 @@ router.post("/add_user", function (req, res) {
             if (id === -1) {
                 id = result.insertId;
             }
-            /*
-            identifier.save(function (error, r) {
-                if (error) {
-                    util.getInternalServerError(res);
-                    return;
-                }
-
-                res.json({"identifier_id": r.insertId, "user_id": id});
-            });
-             */
             res.json({"user_id": id});
+        });
+    });
+});
 
+router.post("/session", function (req, res) {
+
+    if (req.body.app_secret !== config.app_secret) {
+        util.getForbiddenStatus(res);
+        return;
+    }
+
+    let user_id = req.body.user_id;
+    let start_time = null;
+    if (req.body.start_time) {
+        start_time = req.body.start_time;
+    }
+
+    const User = model.user;
+    let user = new User();
+    user.set("id", user_id);
+    user.find("first", {where: "id = " + user.id}, function (err, row) {
+
+        if (err) {
+            util.getInternalServerError(res);
+            return;
+        }
+
+        if (!err && row === undefined) {
+            res.status(400).send();
+        }
+
+        const MeasurementSession = model.measurementSession;
+        let measurementSession = new MeasurementSession({
+            user_id: user.id,
+            start_time: start_time
+        });
+
+
+        measurementSession.save(function (error, r) {
+            if (error) {
+                util.getInternalServerError(res);
+                return;
+            }
+            res.json({"measurement_session_id": r.insertId});
         });
     });
 });
@@ -160,9 +186,7 @@ router.post("/add_record/bulk", function (req, res) {
     }
 
     let records = req.body.records;
-    const user_id = req.body.user_id;
-    const Image = model.image;
-    let image = new Image();
+    const session_id = req.body.measurement_session_id;
 
     if(!Array.isArray(records)) {
         util.getBadRequest(res);
@@ -170,16 +194,16 @@ router.post("/add_record/bulk", function (req, res) {
     }
 
     records.forEach(function (record, index) {
-        var value = record.value;
-        var time = record.time;
-        var image_id = record.image;
+        let value = record.value;
+        let time = record.time;
+        let image_id = record.image;
 
         const Measurement = model.measurement;
         let measurement = new Measurement({
             bpm: value,
             time: time,
             image_id: image_id,
-            user_id: user_id
+            session_id: session_id
         });
 
         measurement.save(function(err, row){

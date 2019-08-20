@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS record;
 DROP TABLE IF EXISTS identifier;
 
 DROP TABLE IF EXISTS measurement;
+DROP TABLE IF EXISTS measurement_session;
 DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS image;
 
@@ -23,14 +24,22 @@ CREATE TABLE image (
     PRIMARY KEY (id)
 );
 
+CREATE TABLE measurement_session (
+	id int NOT NULL AUTO_INCREMENT,
+    user_id int NOT NULL,
+    start_time timestamp DEFAULT NOW(),
+    FOREIGN KEY (user_id) REFERENCES user(id),
+    PRIMARY KEY (id)
+);
+
 CREATE TABLE measurement(
 	id int NOT NULL AUTO_INCREMENT,
     bpm int NOT NULL,
     time timestamp NOT NULL,
     image_id int NOT NULL,
-    user_id int NOT NULL,
+    session_id int NOT NULL,
     PRIMARY KEY(id),
-    FOREIGN KEY (user_id) REFERENCES user(id),
+    FOREIGN KEY (session_id) REFERENCES measurement_session(id),
     FOREIGN KEY (image_id) REFERENCES image(id)
 );
 
