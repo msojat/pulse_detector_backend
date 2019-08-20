@@ -9,58 +9,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 </head>
 <body>
-<div class="container">
-    <div id="breadcrumbs" class="row">
-        <div class="btn-group btn-breadcrumb">
-            <a href="/" class="btn btn-primary"><i class="glyphicon glyphicon-home"></i></a>
-            <a href="{{{url}}}" class="btn btn-primary">{{{ fullname }}}</a>
-            <a style="cursor: text" class="btn btn-primary">Sessions</a>
+    <div class="container">
+        <div id="breadcrumbs" class="row">
+            <div class="btn-group btn-breadcrumb">
+                <a href="/" class="btn btn-primary"><i class="glyphicon glyphicon-home"></i></a>
+                <a href="{{{url}}}" class="btn btn-primary">{{{ fullname }}}</a>
+                <a style="cursor: text" class="btn btn-primary">Sessions</a>
+            </div>
+        </div>
+        <div class="jumbotron">
+            <label>User</label>
+            <p>{{{ fullname }}}</p>
+
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th class="text-center">Download</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{#each data}}
+                    <tr>
+                        <th scope="row">{{this.index_increment}}</th>
+                        <td class="text-center">
+                            <a href="{{{this.url}}}">
+                                <span class="glyphicon glyphicon-download-alt"></span>
+                            </a>
+                        </td>
+                    </tr>
+                {{/each}}
+                </tbody>
+            </table>
         </div>
     </div>
-    <div class="jumbotron">
-        <label>User</label>
-        <p>{{{ fullname }}}</p>
 
-        <table class="table table-hover">
-            <thead>
-            <tr>
-                <th>#</th>
-                <th class="text-center">Average heart rate</th>
-                <th class="text-center">Completed</th>
-                <th class="text-center">Details</th>
-            </tr>
-            </thead>
-            <tbody>
-            {{#each data}}
-                <tr>
-                    <th scope="row">{{this.index_increment}}</th>
-                    <td class="text-center">{{{this.avg}}}</td>
-                    {{#if this.is_completed}}
-                        <td class="text-center"><span class="glyphicon glyphicon-ok success"></span></td>
-                    {{else}}
-                        <td class="text-center"><span class="glyphicon glyphicon-remove error"></span></td>
-                    {{/if}}
-                    <td class="text-center">
-                        <a href="{{{this.url}}}">
-                            <span class="glyphicon glyphicon-eye-open"></span>
-                        </a>
-                    </td>
-                </tr>
-            {{/each}}
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<script type="text/javascript">
-    $(function () {
-        $('a').on('dragend', function () {
-            var $this = $(this),
-                    $parent = $this.parent(),
-                    $next = $(this.nextSibling); // $.next() doesn't include text
-            $this.detach().insertBefore($next);
+    <script type="text/javascript">
+        $(function () {
+            $('a').on('dragend', function () {
+                var $this = $(this),
+                        $parent = $this.parent(),
+                        $next = $(this.nextSibling); // $.next() doesn't include text
+                $this.detach().insertBefore($next);
+            });
         });
-    });
-</script>
+    </script>
 </body>
 </html>

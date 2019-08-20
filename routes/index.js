@@ -30,10 +30,9 @@ router.get("/user_details/:jmbag", function (req, res) {
     }
 
     const User = model.user;
-
     let user = new User();
 
-    user.find('first', {where: "jmbag = " + req.params['jmbag']}, function (err, row, fields) {
+    user.find('first', {where: "jmbag = " + req.params['jmbag']}, function (err, row) {
 
         if (err) {
             util.getInternalServerError(res);
@@ -70,23 +69,16 @@ router.get("/user_details/:jmbag", function (req, res) {
 router.get("/sessions/:jmbag", function (req, res) {
     let jmbag = req.params['jmbag'];
 
-    const subQueryRecordsCount = "(select count(*) from record where identifier.id = record.identifier_id) as records,";
-
-    const query = 'select identifier.number_of_records, ' + subQueryRecordsCount +
-        ' `user`.jmbag, `user`.name, `user`.surname, record.identifier_id, ' +
-        ' avg(heart_rate.heart_rate) as avg, identifier.number_of_records from `user` ' +
-        ' join record on record.user_id = `user`.id ' +
-        ' join identifier on identifier.id = record.identifier_id ' +
-        ' join heart_rate on heart_rate.identifier_id = record.identifier_id ' +
-        ' group by identifier.id,`user`.id ' +
-        ' having `user`.jmbag = "' + jmbag + '";';
+    const query = 'SELECT `user`.name, `user`.surname, `user`.jmbag, measurement_session.id' +
+        ' FROM measurement_session ' +
+        ' LEFT JOIN `user` ON measurement_session.user_id = `user`.id ' +
+        ' HAVING `user`.jmbag = "' + jmbag + '";';
 
     const User = model.user;
 
     let user = new User();
 
-    user.query(query, function (error, r, f) {
-
+    user.query(query, function (error, r) {
         if (error) {
             util.getInternalServerError(res);
             return;
@@ -97,27 +89,24 @@ router.get("/sessions/:jmbag", function (req, res) {
             return;
         }
 
-        if (r.length == 0) {
+        if (r.length === 0) {
             res.redirect(userDetails + jmbag + "?" + isEmpty + "=" + true);
             return;
         }
 
-        var fullname = r[0].name + " " + r[0].surname;
+        let fullName = r[0].name + " " + r[0].surname;
 
-        var url = userDetails + jmbag;
+        let url = userDetails + jmbag;
 
-        var data = [];
-        for (var i = 0; i < r.length; i++) {
-            var tmp = {};
-            tmp.jmbag = r[i].jmbag;
-            tmp.avg = r[i].avg.toFixed(2);
+        let data = [];
+        for (let i = 0; i < r.length; i++) {
+            let tmp = {};
             tmp.index_increment = i + 1;
-            tmp.url = recordDetails + jmbag + "/" + r[i].identifier_id + "/" + tmp.index_increment;
-            tmp.is_completed = r[i].number_of_records === r[i].records;
+            tmp.url = "/api/csv?session_id=" + r[i].id;
             data.push(tmp);
         }
 
-        res.render("all_sessions", {"layout": false, "data": data, "fullname": fullname, "jmbag": jmbag, "url": url});
+        res.render("all_sessions", {"layout": false, "data": data, "fullname": fullName, "jmbag": jmbag, "url": url});
 
     });
 });
