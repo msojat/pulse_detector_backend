@@ -291,7 +291,7 @@ router.get('/csv', function(req, res) {
 
         res.statusCode = 200;
         res.setHeader('Content-Type', 'text/csv');
-        res.setHeader('Content-Disposition', ['attachment; filename="filename.csv"']);
+        res.setHeader('Content-Disposition', ['attachment; filename="bpm.csv"']);
 
         res.write('\"id\",\"bpm\",\"time\",\"image_id\",\"session_id\",\"user_id\"\r\n');
         rows.forEach(function(row){
