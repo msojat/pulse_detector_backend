@@ -272,9 +272,16 @@ router.get('/csv', function(req, res) {
         return;
     }
 
-    let query_string = "SELECT measurement.*, measurement_session.user_id FROM measurement " +
-        "LEFT JOIN measurement_session " +
+    let query_string = "SELECT measurement.bpm, measurement.time, " +
+        "image.name AS image_name, " +
+        "user.name AS user_name, user.surname, user.jmbag " +
+        "FROM measurement " +
+        "INNER JOIN measurement_session " +
         "ON measurement_session.id = measurement.session_id " +
+        "INNER JOIN image " +
+        "ON image.id = measurement.image_id " +
+        "INNER JOIN user " +
+        "ON measurement_session.user_id = user.id " +
         "WHERE measurement_session.id = " + session_id + ";";
 
     const MeasurementSession = model.measurementSession;
@@ -293,7 +300,7 @@ router.get('/csv', function(req, res) {
         res.setHeader('Content-Type', 'text/csv');
         res.setHeader('Content-Disposition', ['attachment; filename="bpm.csv"']);
 
-        res.write('\"id\",\"bpm\",\"time\",\"image_id\",\"session_id\",\"user_id\"\r\n');
+        res.write('\"bpm\",\"time\",\"image_name\",\"user_name\",\"user_surname\",\"jmbag\"\r\n');
         rows.forEach(function(row){
             row = Object.values(row);
             res.write(row.map(function(field) {
