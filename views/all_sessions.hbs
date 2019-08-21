@@ -25,6 +25,7 @@
                 <thead>
                 <tr>
                     <th>#</th>
+                    <th>Time</th>
                     <th class="text-center">Download</th>
                 </tr>
                 </thead>
@@ -32,6 +33,7 @@
                 {{#each data}}
                     <tr>
                         <th scope="row">{{this.index_increment}}</th>
+                        <td scope="row">{{this.start_time}}</td>
                         <td class="text-center">
                             <a href="{{{this.url}}}">
                                 <span class="glyphicon glyphicon-download-alt"></span>

@@ -69,7 +69,8 @@ router.get("/user_details/:jmbag", function (req, res) {
 router.get("/sessions/:jmbag", function (req, res) {
     let jmbag = req.params['jmbag'];
 
-    const query = 'SELECT `user`.name, `user`.surname, `user`.jmbag, measurement_session.id' +
+    const query = 'SELECT `user`.name, `user`.surname, `user`.jmbag,' +
+        ' measurement_session.id, measurement_session.start_time' +
         ' FROM measurement_session ' +
         ' LEFT JOIN `user` ON measurement_session.user_id = `user`.id ' +
         ' HAVING `user`.jmbag = "' + jmbag + '";';
@@ -102,6 +103,7 @@ router.get("/sessions/:jmbag", function (req, res) {
         for (let i = 0; i < r.length; i++) {
             let tmp = {};
             tmp.index_increment = i + 1;
+            tmp.start_time = r[i].start_time;
             tmp.url = "/api/csv?session_id=" + r[i].id;
             data.push(tmp);
         }
