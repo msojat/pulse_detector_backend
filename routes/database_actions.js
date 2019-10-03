@@ -12,7 +12,7 @@ router.post("/add_user", function (req, res) {
         return;
     }
 
-    if (!(util.isNumberValid(req.body.jmbag) && req.body.jmbag.length == 10 &&
+    if (!(util.isNumberValid(req.body.jmbag) && req.body.jmbag.length === 10 &&
         util.isNumberValid(req.body.number_of_records) &&
         util.isNameValid(req.body.name) && util.isNameValid(req.body.surname))) {
         res.status(400).send();
@@ -71,6 +71,7 @@ router.post("/session", function (req, res) {
 
     let user_id = req.body.user_id;
     let start_time = null;
+    let session_name = req.body.session_name;
     if (req.body.start_time) {
         start_time = req.body.start_time;
     }
@@ -92,7 +93,8 @@ router.post("/session", function (req, res) {
         const MeasurementSession = model.measurementSession;
         let measurementSession = new MeasurementSession({
             user_id: user.id,
-            start_time: start_time
+            start_time: start_time,
+            session_name: session_name
         });
 
 
@@ -224,13 +226,13 @@ router.post("/add_image", function (req, res) {
         return;
     }
 
-    const Image = model.image;
-    let image = new Image();
-
     if(! req.body.name){
         res.status(400).end();
         return;
     }
+    const Image = model.image;
+
+    let image = new Image();
 
     image.find("first", {where: "name = '" + req.body.name + "'"}, function (err, row) {
         if (err) {

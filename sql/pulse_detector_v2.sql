@@ -28,6 +28,7 @@ CREATE TABLE measurement_session (
 	id int NOT NULL AUTO_INCREMENT,
     user_id int NOT NULL,
     start_time timestamp DEFAULT NOW(),
+    session_name VARCHAR(255),
     FOREIGN KEY (user_id) REFERENCES user(id),
     PRIMARY KEY (id)
 );

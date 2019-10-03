@@ -2,7 +2,7 @@ var mysqlModel = require("mysql-model");
 
 var connection = mysqlModel.createConnection({
     host: 'localhost',
-    user: 'dfodor',
+    user: 'root',
     password: '',
     database: 'pulse_detector'
 });
